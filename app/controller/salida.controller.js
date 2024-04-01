@@ -1,6 +1,7 @@
 const db = require("../config/db.config.js");
 
 const salida = db.salidas;
+//const checkList = db.checklist;
 
 // FETCH all Users
 
@@ -58,6 +59,45 @@ exports.findOnePvr = async (req, res) => {
     });
 };
 
+/*exports.checkList = async (req, res) => {
+  console.log(req.body);
+
+  checkList
+    .create({ checklist: req.body })
+    .then(() => {
+      res.status(200).send({ message: "Exito checklist" });
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message });
+    });
+
+  /* await User.findAll({
+    include: [{ model: db.TipoUsuarios }],
+  }); 
+};*/
+/*exports.checkListGet = async (req, res) => {
+  console.log(req.params.id);
+
+  await checkList.findByPk(req.params.id).then((resp) => {
+    res.status(200).send(resp);
+    /* if (!resp) {
+        res
+          .status(400)
+          .send({ message: "No se Encuentra Registro Con ese ID" });
+      } else {
+        res.status(200).send(resp);
+      }
+    })
+    .catch((err) => {
+      res.send(err).status(404);
+    }); 
+  }); 
+
+  /* await User.findAll({
+    include: [{ model: db.TipoUsuarios }],
+  }); 
+};*/
+
 exports.findAll = async (req, res) => {
   await salida
     .findAll()
@@ -96,7 +136,10 @@ exports.findByUnidad = async (req, res) => {
   await salida.findByPk(req.params.id).then((resp) => {
     res.status(200).send(resp);
 
-    console.log(resp._previousDataValues.pvr);
+    /// console.log(resp._previousDataValues.pvr);
+
+    console.table(resp);
+
     /* if (!resp) {
         res
           .status(400)

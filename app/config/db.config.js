@@ -25,6 +25,7 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 //Models/Tables
+db.checklist = require("../model/checklist.model.js")(sequelize, Sequelize);
 db.categorias = require("../model/categoria.model.js")(sequelize, Sequelize);
 db.salidas = require("../model/salida.model.js")(sequelize, Sequelize);
 db.modelos = require("../model/modelo.model.js")(sequelize, Sequelize);
@@ -55,5 +56,5 @@ db.vehiculos.belongsTo(db.modelos, { foreignKey: "idModelo" });
 //db.rutas.belongsTo(db.sectores, { foreignKey: "idSector" });
 db.vehiculos.belongsTo(db.categorias, { foreignKey: "idCategoria" });
 //db.vehiculos.belongsTo(db.users, { foreignKey: "idUser" });
-db.vehiculos.belongsTo(db.falla, { foreignKey: "idEstado" });
+//db.vehiculos.belongsTo(db.falla, { foreignKey: "idEstado" });
 module.exports = db;

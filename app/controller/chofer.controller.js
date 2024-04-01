@@ -1,5 +1,7 @@
 const db = require("../config/db.config.js");
 const base64 = require("base64-img");
+//const { getPagination, getPagingData } = require("../config/helper.js");
+const { Op } = require("sequelize");
 
 const choferes = db.choferes;
 
@@ -68,6 +70,64 @@ exports.findAll = async (req, res) => {
     include: [{ model: db.TipoUsuarios }],
   });*/
 };
+/*exports.findAllGet = async (req, res) => {
+  /*const { page, size } = req.query;
+
+  await choferes
+    .findAndCountAll({
+      limit: size,
+      offset: page * size,
+    })
+    .then((resp) => {
+      // Send all users to Client
+      //res.status(200).send({hola:"go"});
+
+      console.log(resp);
+
+      res.status(200).send(resp);
+
+      /*   for (let i in res) {
+        console.log(`${res[i].dataValues.tipousuario.ruta}`);
+      } 
+
+      //console.log(res[0]._previousDataValues.tipousuario.user);
+      //   console.log(res[0]._previousDataValues.tipousuario.ruta);
+    })
+    .catch((err) => {
+      res.send(err).status();
+    });
+  /* await User.findAll({
+    include: [{ model: db.TipoUsuarios }],
+  }); 
+
+  const { page, size, title } = req.query;
+  var condition = title
+    ? { nombreApellido: { [Op.like]: `%${title}%` } }
+    : null;
+
+  console.log(page, size, title);
+
+  const { limit, offset } = getPagination(page, size);
+
+  await db["choferes"]
+    .findAndCountAll({ where: condition, limit, offset })
+    .then((data) => {
+      //console.log(data);
+
+      const response = getPagingData(data, page, limit);
+
+      console.log(response);
+
+      res.status(200).send(response);
+
+      // console.log(res);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "error en paginacion",
+      });
+    });
+}; */
 exports.findById = async (req, res) => {
   await choferes
     .findByPk(req.params.id)

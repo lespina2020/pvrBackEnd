@@ -4,6 +4,7 @@ module.exports = function (app) {
 
   // Create Empresa
   app.post("/api/choferes/All", auth, chofer.findAll);
+  // app.get("/api/choferes/All", auth, chofer.findAllGet);
   app.post("/api/choferes/", auth, chofer.post);
   app.get("/api/choferes/:id", auth, chofer.findById);
   app.get("/api/choferesCedula/:id", auth, chofer.findByIdChofer);

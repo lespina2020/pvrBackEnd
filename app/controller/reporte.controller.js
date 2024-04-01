@@ -1,5 +1,7 @@
 const db = require("../config/db.config.js");
 const { Op } = require("sequelize");
+const { fecha } = require("../config/helper.js");
+const { getPagination, getPagingData } = require("../config/helper.js");
 
 const salida = db.salidas;
 const vehiculo = db.vehiculos;
@@ -28,6 +30,14 @@ exports.findAll = async (req, res) => {
         [Op.between]: [fechaInicio, fechaFinal],
       },
     };
+  } else if (
+    status === undefined &&
+    fechaInicio === undefined &&
+    fechaFinal === undefined
+  ) {
+    where = {
+      unidad,
+    };
   } else {
     where = {
       unidad,
@@ -46,12 +56,111 @@ exports.findAll = async (req, res) => {
 
   await salida
     .findAll({
+      attributes: [
+        "unidad",
+        "id",
+        "placa",
+        "chofer",
+        "tipoUnidad",
+        "idUsuario",
+        "fecha",
+        "status",
+        "createdAt",
+      ],
       where,
     })
     .then((resp) => {
       res.status(200).send(resp);
 
-      console.log(resp);
+      //console.log(prueba);
+
+      //date.toLocaleDateString();
+    })
+    .catch((err) => {
+      res.send(err).status(404);
+    });
+};
+exports.findAllCant = async (req, res) => {
+  /*SELECT *, JSON_EXTRACT(pvr, "$.isChofer") AS choferes FROM salidas*/
+
+  console.log("goss");
+
+  let fechaInicio = req.body.fechaInicio,
+    fechaFinal = req.body.fechaFinal,
+    where = {},
+    status = req.body.status,
+    unidad = req.body.unidad;
+
+  if (
+    (status === true || status === false) &&
+    fechaInicio &&
+    fechaFinal &&
+    unidad === undefined
+  ) {
+    where = {
+      status,
+      fecha: {
+        [Op.between]: [fechaInicio, fechaFinal],
+      },
+    };
+  } else {
+    where = {
+      unidad,
+      status,
+      fecha: {
+        [Op.between]: [fechaInicio, fechaFinal],
+      },
+    };
+  }
+
+  /*const where = {
+    from: {
+      $between: ["2023-09-10", "2023-09-10"],
+    },
+  };*/
+
+  await salida
+    .findAll({
+      attributes: [
+        "unidad",
+        "id",
+        "placa",
+        "chofer",
+        "tipoUnidad",
+        "idUsuario",
+        "fecha",
+        "status",
+        "createdAt",
+        "pvr",
+      ],
+      where,
+    })
+    .then((resp) => {
+      //res.status(200).send(resp);
+
+      let pvr = resp.map(function (ele) {
+        if (ele.status === false) {
+          status = "Cerrado";
+        } else {
+          status = "Abierto";
+        }
+        return {
+          id: `0${ele.id}`,
+          correlativo: `0${ele.id}`,
+          unidad: ele.unidad,
+          chofer: ele.chofer,
+          placa: ele.placa,
+          fecha: fecha(ele.fecha),
+          status,
+          horaEntrada: ele.pvr.isVariableEntrada.horaEntrada,
+          horaSalida: ele.pvr.isVariableSalida.horaSalida,
+          GasoilSalida: ele.pvr.isVariableSalida.GsSalida,
+          GasoilEntrada: ele.pvr.isVariableEntrada.GsEntrada,
+        };
+      });
+      res.status(200).send(pvr);
+
+      console.log(pvr);
 
       //date.toLocaleDateString();
     })
@@ -240,4 +349,71 @@ exports.findAllOperatividad = async (req, res) => {
       res.send(err).status(404);
     });*/
   });
+};
+exports.findAllGet = async (req, res) => {
+  let include = [];
+
+  /*const { page, size } = req.query;
+
+  await choferes
+    .findAndCountAll({
+      limit: size,
+      offset: page * size,
+    })
+    .then((resp) => {
+      // Send all users to Client
+      //res.status(200).send({hola:"go"});
+
+      console.log(resp);
+
+      res.status(200).send(resp);
+
+      /*   for (let i in res) {
+        console.log(`${res[i].dataValues.tipousuario.ruta}`);
+      } 
+
+      //console.log(res[0]._previousDataValues.tipousuario.user);
+      //   console.log(res[0]._previousDataValues.tipousuario.ruta);
+    })
+    .catch((err) => {
+      res.send(err).status();
+    });
+  /* await User.findAll({
+    include: [{ model: db.TipoUsuarios }],
+  });*/
+
+  const { page, size, title, base, varPagina } = req.query;
+  var condition = title ? { [varPagina]: { [Op.like]: `%${title}%` } } : null;
+
+  if (base === "vehiculos") {
+    include = [
+      { model: db.modelos },
+      { model: db.categorias },
+      //   { model: db.users },
+      // { model: db.falla },
+    ];
+  }
+
+  console.log(page, size, title);
+
+  const { limit, offset } = getPagination(page, size);
+
+  await db[base]
+    .findAndCountAll({ where: condition, include, limit, offset })
+    .then((data) => {
+      //console.log(data);
+
+      const response = getPagingData(data, page, limit);
+
+      console.log(response);
+
+      res.status(200).send(response);
+
+      // console.log(res);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "error en paginacion",
+      });
+    });
 };

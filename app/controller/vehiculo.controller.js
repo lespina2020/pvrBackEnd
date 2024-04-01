@@ -12,12 +12,17 @@ exports.post = async (req, res) => {
 
   vehiculo.create(data);*/
 
+  console.log(req.body);
+
   await vehiculo
+
     .create(req.body)
     .then(() => {
       res.status(200).send({ message: "Vehiculo Registrada" });
     })
     .catch((err) => {
+      console.log(err);
+
       res.status(500).send({ message: err.message });
     });
 
@@ -39,7 +44,7 @@ exports.findAll = async (req, res) => {
         { model: db.modelos },
         { model: db.categorias },
         //   { model: db.users },
-        { model: db.falla },
+        // { model: db.falla },
       ],
     })
     .then((resp) => {
@@ -62,6 +67,19 @@ exports.findAll = async (req, res) => {
     include: [{ model: db.TipoUsuarios }],
   });*/
 };
+exports.findLista = async (req, res) => {
+  await vehiculo
+    .findAll({ attributes: ["id", "unidad"] })
+    .then((resp) => {
+      res.status(200).send(resp);
+    })
+    .catch((err) => {
+      res.send(err).status();
+    });
+  /* await User.findAll({
+    include: [{ model: db.TipoUsuarios }],
+  });*/
+};
 exports.findAllId = async (req, res) => {
   await vehiculo
 
@@ -73,7 +91,7 @@ exports.findAllId = async (req, res) => {
         { model: db.modelos },
         { model: db.categorias },
         // { model: db.users },
-        { model: db.falla },
+        // { model: db.falla },
       ],
     })
     .then((resp) => {
@@ -111,6 +129,8 @@ exports.findAllId = async (req, res) => {
   });*/
 };
 exports.findById = async (req, res) => {
+  console.log(req.params.id);
+
   await vehiculo
     .findByPk(req.params.id)
     .then((resp) => {
@@ -144,7 +164,7 @@ exports.findByIdPlaca = async (req, res) => {
         res.status(200).send(resp);
       }
     })
-    .catch((err) => {
+     catch((err) => {
       res.send(err).status(404);
     });*/
     });

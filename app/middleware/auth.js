@@ -10,14 +10,14 @@ verifyToken = (req, res, next) => {
     token = token.slice(7, token.length);
   }
   if (!token) {
-    return res.status(403).send({
+    return res.status(401).send({
       message: "Sesion Vencida, Ingresar su Usuario de Nuevo.",
     });
   }
 
   jwt.verify(token, env.JWT_ENCRYPTION, (err, decoded) => {
     if (err) {
-      console.log(err);
+      console.log("hola err");
       return res.status(401).send({
         message: "Invalid Token!",
       });

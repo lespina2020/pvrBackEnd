@@ -9,6 +9,8 @@ module.exports = function (app) {
   app.post(`/api/${val}/operatividad`, controller.findAllOperatividad);
   app.post(`/api/${val}/condicion`, controller.findAllCondicion);
   app.post(`/api/${val}/averia`, controller.findAllAveria);
+  app.post(`/api/${val}/AllCantidad`, controller.findAllCant);
+  app.get(`/api/${val}/All`, controller.findAllGet);
 
   /////const auth = require("../middleware/auth.js");
 };

@@ -9,10 +9,16 @@ module.exports = function (app) {
   // Create Empresa
   app.post(`/api/${val}/All`, auth, controller.findAll);
   app.get(`/api/${val}/findOnePvr/:id`, auth, controller.findOnePvr);
+  ////checklist
+  //app.post(`/api/${val}/checklist`, controller.checkList);
+  //WSS app.get(`/api/${val}/checklist/:id`, controller.checkListGet);
+
+  ///////////
+
   app.get(`/api/${val}/box/:id`, controller.findByUnidad);
   app.post(`/api/${val}/`, auth, controller.post);
   app.get(`/api/${val}/:id`, auth, controller.findByUnidad);
-  app.get(`/api/${val}/pvrStatus/:id`, auth, controller.findByStatus);
+  app.get(`/api/${val}/pvrStatus/:id`, controller.findByStatus);
   //app.get(`/api/rutasId/:id`, controller.findByIdRuta);
   app.put(`/api/${val}/:id`, auth, controller.update);
   app.delete(`/api/${val}/:id`, auth, controller.delete);

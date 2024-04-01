@@ -66,7 +66,17 @@ exports.findById = (req, res) => {
 // Update a User
 exports.update = (req, res) => {
   const id = req.params.id;
+  let { firmaImg } = req.body;
+  const cedula = req.body.cedula;
 
+  if (firmaImg != false) {
+    base64.img(firmaImg, "./public", cedula, function (err, filepath) {
+      req.body.firma = filepath.substring(7);
+      /*const pathArr = filepath.split("/");
+
+    let fileName = pathArr[pathArr.length - 1];*/
+    });
+  }
   User.update(
     {
       firstname: req.body.firstname,
@@ -98,8 +108,6 @@ exports.delete = (req, res) => {
 
 exports.signup = (req, res) => {
   //Check Email
-
-  console.log("gollllllllllllllllllllllllla");
 
   let { firmaImg } = req.body;
   const cedula = req.body.cedula;
@@ -143,10 +151,12 @@ exports.signin = (req, res) => {
   console.log(req.body.password);
   User.findAll({
     where: {
-      email: req.body.email,
+      email: req.body.email.trim(),
     },
   })
     .then((user) => {
+      console.log(user);
+
       if (!user) {
         return res.send({
           message: "Usuario no Encontrado.",
@@ -171,7 +181,7 @@ exports.signin = (req, res) => {
           env.JWT_ENCRYPTION,
 
           {
-            expiresIn: 60 * 60 * 24, // 24 hours  60 * 60 * 24
+            expiresIn: "1h", // 24 hours  60 * 60 * 24
           }
         );
 
