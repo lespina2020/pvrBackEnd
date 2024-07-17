@@ -163,10 +163,13 @@ exports.findByStatus = async (req, res) => {
       },
     })
     .then((resp) => {
-      let status = resp[0].dataValues.status;
+      let status = resp[0].dataValues.status,
+        fecha = resp[0].dataValues.fecha,
+        chofer = resp[0].dataValues.chofer,
+        usuario = resp[0].dataValues.idUsuario;
 
       if (status === true) {
-        res.status(200).send(true);
+       res.status(200).send({ status, fecha, usuario, chofer });
       }
     })
     .catch((err) => {
