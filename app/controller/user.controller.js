@@ -181,7 +181,7 @@ exports.signin = (req, res) => {
           env.JWT_ENCRYPTION,
 
           {
-            expiresIn: "1h", // 24 hours  60 * 60 * 24
+            expiresIn: "24h", // 24 hours  60 * 60 * 24
           }
         );
 
